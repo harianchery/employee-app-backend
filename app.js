@@ -1,27 +1,38 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
-const employee=require("./models/employee")
+const {employeemodel}=require("./models/employee")
 
 const app=express()
 app.use(cors())
+app.use(express.json())
 
-app.post("/",(req,res)=>{
-    res.send("Add")
-})
+mongoose.connect("mongodb+srv://hari:hari001@cluster0.ocavfn3.mongodb.net/employeedb?retryWrites=true&w=majority&appName=Cluster0")
 
-app.post("/search",(req,res)=>{
-    res.send("Search")
-})
-
-app.post("/delete",(req,res)=>{
-    res.send("Delete")
+app.post("/add",(req,res)=>{
+    let input=req.body
+    // console.log(input)
+    let employee=new employeemodel(input)
+    employee.save()
+    // console.log(employee)
+    
+    res.json({"status":"success"})
 })
 
 app.get("/view",(req,res)=>{
-    res.send(View)
+    employeemodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch((error)=>{
+        res.json(error)
+    })
 })
 
+
+
 app.listen(8080,()=>{
-    console.log("server starts")
+    console.log("server started")
+
+
 })
